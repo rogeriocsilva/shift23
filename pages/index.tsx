@@ -26,7 +26,7 @@ function Home() {
   return (
     <main>
       <section className="flex flex-col space-y-4 gap-6">
-        <p variant="h1">Web3 Sessions with NextAuth.js</p>
+        <p>Web3 Sessions with NextAuth.js</p>
 
         {metamaskInstalled ? (
           <>

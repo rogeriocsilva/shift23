@@ -1,19 +1,18 @@
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import { NextPageContext } from "next";
 
 import { useProtected } from "../hooks/useProtected";
 import { useAccount } from "wagmi";
+import Chat from "../components/Chat";
 
 function Protected() {
   const handleLogout = useProtected();
   const [{ data: accountData }] = useAccount();
 
-  console.log({ accountData });
-
   return (
     <main>
       <section className="flex flex-col gap-6">
-        <p variant="h1">Web3 Session with NextAuth.js, Protected Route</p>
+        <p>Web3 Session with NextAuth.js, Protected Route</p>
         <p>My address</p>
         <p>{accountData?.address}</p>
         <p>
@@ -22,6 +21,7 @@ function Protected() {
           Metamask interface. To make sure we log them out, we can create a
           custom hook.
         </p>
+        <Chat />
 
         <button onClick={handleLogout}>Logout</button>
       </section>
