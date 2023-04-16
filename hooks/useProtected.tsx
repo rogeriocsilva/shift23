@@ -1,13 +1,14 @@
 import { useSession, signOut } from "next-auth/react";
 import { useEffect, useCallback } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
 import { usePrevious } from "./usePrevious";
 
 export function useProtected() {
-  const [{ data: accountData }, disconnect] = useAccount();
+  const { address } = useAccount();
+  const { disconnect } = useDisconnect();
+
   const session = useSession();
-  const address = accountData?.address;
-  const prevAddress = usePrevious(accountData?.address);
+  const prevAddress = usePrevious(address);
 
   const handleSignout = useCallback(async () => {
     await signOut({ callbackUrl: "/" });
@@ -21,7 +22,7 @@ export function useProtected() {
     if (session.status !== "loading" && !address && prevAddress) {
       handleSignout();
     }
-  }, [accountData, address, handleSignout, prevAddress, session.status]);
+  }, [address, handleSignout, prevAddress, session.status]);
 
   return handleSignout;
 }

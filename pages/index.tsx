@@ -1,49 +1,21 @@
-import { signIn } from "next-auth/react";
-import { useConnect, useAccount } from "wagmi";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
+import Protected from "../components/Protected";
 
 function Home() {
-  const [{ data: connectData }, connect] = useConnect();
-  const [{ data: accountData }] = useAccount();
-  const metamaskInstalled = connectData.connectors[0].name === "MetaMask";
-
-  const handleLogin = async () => {
-    try {
-      const callbackUrl = "/protected";
-      if (accountData?.address) {
-        signIn("credentials", { address: accountData.address, callbackUrl });
-        return;
-      }
-      const { data, error } = await connect(connectData.connectors[0]);
-      if (error) {
-        throw error;
-      }
-      signIn("credentials", { address: data?.account, callbackUrl });
-    } catch (error) {
-      window.alert(error);
-    }
-  };
+  const { isConnected } = useAccount();
 
   return (
-    <main className="w-full">
-      <section className="flex flex-col space-y-4 gap-6">
-        <p>Web3 Sessions with NextAuth.js</p>
-
-        {metamaskInstalled ? (
-          <>
-            <p>Try it by logging in!</p>
-            <button onClick={handleLogin}>Login</button>
-          </>
-        ) : (
-          <>
-            <p>
-              Please install{" "}
-              <a href="https://metamask.io/" target="_blank" rel="noreferrer">
-                Metamask
-              </a>{" "}
-              to use this example.
-            </p>
-          </>
-        )}
+    <main className={`w-full ${isConnected ? "" : "h-full"}`}>
+      <div
+        className={`flex  ${
+          isConnected ? "justify-end" : "h-full justify-center items-center"
+        }`}
+      >
+        <ConnectButton />
+      </div>
+      <section className="flex flex-col items-center justify-center w-full h-full">
+        {isConnected && <Protected />}
       </section>
     </main>
   );
