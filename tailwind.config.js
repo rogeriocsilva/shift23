@@ -9,7 +9,13 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        sky: {
+          'metamask': '#0e76fd'
+        }
+      }
+    },
   },
   plugins: [],
 };

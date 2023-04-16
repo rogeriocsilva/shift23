@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 
+import Image from "next/image";
+
 export default function GenerateImage({
   prompt,
   setLoading,
@@ -31,9 +33,15 @@ export default function GenerateImage({
   if (imageURL) {
     return (
       <div className="flex flex-center mt-8 rounded-xl border shadow-md h-100 w-100">
-        <img src={imageURL} className="w-full h-full" alt="random image"></img>
+        <Image className="bg-slate-200 rounded-xl" src={imageURL} width={384} height={384} alt={prompt} />
       </div>
     );
   }
-  return <div>Loading...</div>;
+  return (
+    <>
+      <div className="flex flex-center mt-8 rounded-xl border shadow-md w-96 h-96 bg-slate-200">
+      </div>
+      <p className="mt-2 flex items-center text-sm text-gray-500">Loading your image.</p>
+    </>
+  );
 }
