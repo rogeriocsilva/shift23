@@ -28,8 +28,6 @@ export function MintNFT({ imageURL }: { imageURL: string }) {
     args: [address, imageURL],
   });
 
-  console.log(preparedContract);
-
   const { data, write } = useContractWrite(preparedContract.config);
 
   const { isLoading, isSuccess } = useWaitForTransaction({
