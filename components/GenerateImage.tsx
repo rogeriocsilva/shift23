@@ -1,36 +1,39 @@
-import Image from "next/image";
+import { useState, useEffect, useCallback } from "react";
 
-export default function GeneratedImage(props) {
-  console.log(props);
+export default function GenerateImage({
+  prompt,
+  setLoading,
+}: {
+  prompt: string;
+  setLoading: (state: boolean) => void;
+}) {
+  const [imageURL, setImageURL] = useState("");
 
-  if (!props.predictions.length) return null;
+  const getGeneratedImage = useCallback(async () => {
+    const response = await fetch("/api/image", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt,
+      }),
+    });
+    const imageResponse = await response.json();
+    setImageURL(imageResponse.imageURL);
+    setLoading(false);
+  }, [prompt, setLoading]);
 
-  const predictions = props.predictions.map((prediction) => {
-    prediction.lastImage = prediction.output
-      ? prediction.output[prediction.output.length - 1]
-      : null;
-    return prediction;
-  });
+  useEffect(() => {
+    getGeneratedImage();
+  }, [getGeneratedImage]);
 
-  return (
-    <div>
-      <div className="m-auto">
-        {predictions
-          .filter((prediction) => prediction.output)
-          .map((prediction, index) => {
-            console.log(prediction);
-            return (
-              <img
-                alt={"prediction" + index}
-                key={"prediction" + index}
-                layout="fill"
-                className="absolute animate-in fade-in"
-                style={{ zIndex: index }}
-                src={prediction.lastImage}
-              />
-            );
-          })}
+  if (imageURL) {
+    return (
+      <div className="flex flex-center mt-8 rounded-xl border shadow-md h-100 w-100">
+        <img src={imageURL} className="w-full h-full" alt="random image"></img>
       </div>
-    </div>
-  );
+    );
+  }
+  return <div>Loading...</div>;
 }

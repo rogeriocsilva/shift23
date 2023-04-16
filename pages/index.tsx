@@ -24,7 +24,7 @@ function Home() {
   };
 
   return (
-    <main>
+    <main className="w-full">
       <section className="flex flex-col space-y-4 gap-6">
         <p>Web3 Sessions with NextAuth.js</p>
 
@@ -36,7 +36,6 @@ function Home() {
         ) : (
           <>
             <p>
-              {" "}
               Please install{" "}
               <a href="https://metamask.io/" target="_blank" rel="noreferrer">
                 Metamask

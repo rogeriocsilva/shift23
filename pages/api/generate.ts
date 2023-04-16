@@ -1,39 +1,35 @@
-import { OpenAIStreamPayload, OpenAIStream } from "../../utils/OpenAIStream";
-
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error("Missing env var from OpenAI");
-}
+import { Configuration, OpenAIApi } from "openai";
 
 export const config = {
   bodyParser: false,
 };
 
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
 const handler = async (req, res) => {
-  const prompt = req.body.prompt;
+  if (!req.body.prompt)
+    return res
+      .status(400)
+      .json({ message: "Pass in prompt field for phrase generation" });
 
-  if (!prompt) {
-    return new Response("No prompt in the request", { status: 400 });
-  }
+  const openai = new OpenAIApi(configuration);
 
-  const payload = {
-    model: "text-davinci-003",
-    prompt: prompt,
-    temperature: 0.5,
-    max_tokens: 4000,
-  };
-
-  const response = await fetch("https://api.openai.com/v1/completions", {
-    headers: new Headers({
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY ?? ""}`,
-    }),
-    method: "POST",
-    body: JSON.stringify(payload),
+  const response = await openai.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: [
+      {
+        role: "user",
+        content: req.body.prompt,
+      },
+    ],
   });
+  if (!response.data) throw new Error("Unable to get phrase");
 
-  const data = await response.json();
-
-  return res.send({ status: 200, message: data });
+  return res.status(200).json({
+    message: response.data.choices[0].message?.content,
+  });
 };
 
 export default handler;

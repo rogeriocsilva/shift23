@@ -3,7 +3,7 @@ import { NextPageContext } from "next";
 
 import { useProtected } from "../hooks/useProtected";
 import { useAccount } from "wagmi";
-import Chat from "../components/Chat";
+import GeneratePhase from "../components/GeneratePhase";
 
 function Protected() {
   const handleLogout = useProtected();
@@ -15,15 +15,14 @@ function Protected() {
         <p>Web3 Session with NextAuth.js, Protected Route</p>
         <p>My address</p>
         <p>{accountData?.address}</p>
-        <p>
-          We are now connected using our metamask account and can access
-          connected routes. However, users can manually disconnect from the
-          Metamask interface. To make sure we log them out, we can create a
-          custom hook.
-        </p>
-        <Chat />
+        <GeneratePhase />
 
-        <button onClick={handleLogout}>Logout</button>
+        <button
+          className="w-full rounded-xl bg-cyan-500 px-4 py-2 font-medium text-white hover:bg-black/80"
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
       </section>
     </main>
   );
